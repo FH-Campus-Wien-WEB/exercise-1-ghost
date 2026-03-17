@@ -1,37 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies!</title>
     <style>
-        /* Part 3: Your styling goes here */
-    </style>
-    <script>
-        function reverseString(s) {
-            return s.split("").reverse().join("");
+        .moviesList {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            margin: 0 20px;
         }
 
+        .movie {
+            border: 1px solid black;
+            padding: 15px;
+            width: 350px;
+            height: 600px;
+            position: relative;
+        }
+
+        .movie-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 10px 0 5px 0;
+        }
+
+        .movie:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .movie-poster {
+            height: 300px;
+            width: auto;
+            object-fit: contain;
+            display: flex;
+            margin: auto;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #ccc;
+            border-top-color: #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 40px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .detail-container {
+            display: flex;
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 20px;
+        }
+
+        .detail-poster {
+            max-height: 450px;
+            border-radius: 8px;
+        }
+
+        .detail-info {
+            flex: 1;
+        }
+
+        .detail-info h3 {
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+
+        .detail-info dl {
+            margin: 0;
+        }
+
+        .detail-info dt {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .detail-info dd {
+            margin: 2px 0 0 0;
+        }
+
+        .genre {
+            display: inline-block;
+            background-color: #e0e0e0;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-right: 5px;
+            font-size: 0.9em;
+        }
+
+        .button {
+            display: block;
+            width: 250px;
+            padding: 10px;
+            font-size: medium;
+            border-radius: 20px;
+            color: white;
+            background-color: black;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            box-shadow: 0 0 10px purple;
+        }
+
+        .show-details-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .close-button {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        let movies = []
         window.onload = function () {
             const xhr = new XMLHttpRequest()
             xhr.onload = function () {
-                const bodyElement = document.querySelector("body")
+                const moviesElement = document.querySelector(".moviesList")
+                moviesElement.innerHTML = ""    // as soon as the request is done, remove the spinner
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */ 
-                    bodyElement.append(reverseString(xhr.responseText))
+                    movies = JSON.parse(xhr.responseText)
+                    movies.forEach(movie => {
+                        const movieElement = document.createElement("div")
+                        movieElement.classList.add("movie")
+
+                        movieElement.innerHTML = `
+                        <article>
+                            <img src="${movie.poster}" alt="Poster of '${movie.title}'" class="movie-poster">
+                            <p class="movie-title">${movie.title}</p>
+                            <p class="movie-plot">${movie.plot}</p>
+                            <button class="button show-details-button" onclick="showDetails(${movies.indexOf(movie)})">Show details</button>
+                        </article>
+                        `
+                        moviesElement.append(movieElement)
+                    })
                 } else {
-                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
+                    moviesElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
                 }
             }
             xhr.open("GET", "/movies")
             xhr.send()
         }
+
+        function showDetails(index) {
+            const detailsElement = document.querySelector("#movieDetails")
+            const movieList = document.querySelector("#movieList")
+
+            const movie = movies[index]
+            const releasedDate = new Date(movie.released).toLocaleDateString("de-AT", { year: "numeric", month: "long", day: "numeric" })
+            const genreTags = movie.genres.map(g => `<span class="genre">${g.trim()}</span>`).join(" ")
+
+            // dl is a description list, dt is the title and dd is the description, it is used here to display the movie details in a structured way
+            detailsElement.innerHTML = `
+                <article class="detail-container">
+                    <img src="${movie.poster}" alt="Poster of '${movie.title}'" class="detail-poster">
+                    <div class="detail-info">
+                        <h2>${movie.title}</h2>
+                        <dl>
+                            <dt>Released</dt>
+                            <dd>${releasedDate}</dd>
+                            <dt>Runtime</dt>
+                            <dd>${movie.runtime} min</dd>
+                            <dt>Genres</dt>
+                            <dd>${genreTags}</dd>
+                            <dt>Directors</dt>
+                            <dd>${movie.directors.join(", ")}</dd>
+                            <dt>Writers</dt>
+                            <dd>${movie.writers.join(", ")}</dd>
+                            <dt>Actors</dt>
+                            <dd>${movie.actors.join(", ")}</dd>
+                            <dt>Metascore</dt>
+                            <dd>${movie.metascore}</dd>
+                            <dt>IMDb Rating</dt>
+                            <dd>${movie.imdbRating}</dd>
+                            <dt>Plot</dt>
+                            <dd>${movie.plot}</dd>
+                        </dl>
+                        <button class="button close-button" onclick="hideDetails()">Back to list</button>
+                    </div>
+                </article>
+            `
+            detailsElement.classList.remove("hidden")
+            movieList.classList.add("hidden")
+        }
+
+        function hideDetails() {
+            const detailsElement = document.querySelector("#movieDetails")
+            const movieList = document.querySelector("#movieList")
+            movieList.classList.remove("hidden")
+            detailsElement.classList.add("hidden")
+        }
     </script>
-
 </head>
-
 <body>
+    <header>
+        <h1>Movies!</h1>
+        <p>Lists all Harry Potter movies, click on them to get more details!</p>
+    </header>
+    <main>
+        <section id="movieList">
+            <div class="moviesList">
+                <div class="spinner"></div>
+            </div>
+        </section>
+        <section id="movieDetails" class="hidden"></section>
+    </main>
 </body>
-
 </html>
