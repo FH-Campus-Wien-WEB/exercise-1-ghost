@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies!</title>
     <style>
+        body {
+            font-family: Monaco, 'Courier New', monospace;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+
         .moviesList {
             display: flex;
             flex-wrap: wrap;
@@ -13,12 +19,13 @@
         }
 
         .movie {
-            border: 1px solid black;
+            border: 1px solid #3a3a5c;
             padding: 15px;
             width: 350px;
             height: 600px;
             position: relative;
             border-radius: 16px;
+            background-color: #16213e;
         }
 
         .movie-title {
@@ -28,7 +35,8 @@
         }
 
         .movie:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 14px rgba(212, 175, 55, 0.4);
+            border-color: #d4af37;
         }
 
         .movie-poster {
@@ -43,8 +51,8 @@
         .spinner {
             width: 48px;
             height: 48px;
-            border: 5px solid #ccc;
-            border-top-color: #333;
+            border: 5px solid #3a3a5c;
+            border-top-color: #d4af37;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 40px auto;
@@ -77,6 +85,7 @@
         .detail-info h3 {
             margin-top: 0;
             font-size: 1.5em;
+            color: #d4af37;
         }
 
         .detail-info dl {
@@ -86,6 +95,7 @@
         .detail-info dt {
             font-weight: bold;
             margin-top: 10px;
+            color: #d4af37;
         }
 
         .detail-info dd {
@@ -94,11 +104,13 @@
 
         .genre {
             display: inline-block;
-            background-color: #e0e0e0;
+            background-color: #2a2a4a;
             padding: 3px 10px;
             border-radius: 12px;
             margin-right: 5px;
             font-size: 0.9em;
+            color: #d4af37;
+            border: 1px solid #3a3a5c;
         }
 
         .button {
@@ -107,13 +119,17 @@
             padding: 10px;
             font-size: medium;
             border-radius: 20px;
-            color: white;
-            background-color: black;
+            color: #1a1a2e;
+            background-color: #d4af37;
             cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: box-shadow 0.2s, background-color 0.2s;
         }
 
         .button:hover {
-            box-shadow: 0 0 10px purple;
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+            background-color: #e6c54b;
         }
 
         .show-details-button {
@@ -128,9 +144,21 @@
         }
 
         hr.rounded {
-            border-top: 4px solid #bbb;
+            border-top: 4px solid #3a3a5c;
             border-radius: 5px;
             margin: 1rem 0;
+        }
+
+        h1 {
+            color: #d4af37;
+        }
+
+        h2 {
+            color: #d4af37;
+        }
+
+        .movie-title {
+            color: #d4af37;
         }
 
         @media screen and (max-width: 768px) {
