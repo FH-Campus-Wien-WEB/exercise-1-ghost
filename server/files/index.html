@@ -35,8 +35,15 @@
         }
 
         .movie:hover {
-            box-shadow: 0 0 14px rgba(212, 175, 55, 0.4);
-            border-color: #d4af37;
+            animation: hoverGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes hoverGlow {
+            0% { box-shadow: 0 0 0px rgb(255, 196, 0); }
+            25% { box-shadow: 0 0 14px rgb(55, 254, 0); }
+            50% { box-shadow: 0 0 14px rgb(0, 196, 255); }
+            75% { box-shadow: 0 0 14px rgb(255, 0, 196); }
+            100% { box-shadow: 0 0 0px rgb(0, 33, 251); }
         }
 
         .movie-poster {
